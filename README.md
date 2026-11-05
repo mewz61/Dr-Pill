@@ -36,9 +36,12 @@ The box scanner does not identify medication from the camera. It displays a pres
 
 ## Publish with GitHub Pages
 
-This repository includes a GitHub Actions workflow that enables GitHub Pages and publishes the site whenever changes are pushed to `main`.
+This repository includes a GitHub Actions workflow that publishes the site whenever changes are pushed to `main`.
 
-1. Push the project files to the repository's `main` branch.
-2. Open the **Actions** tab and wait for the **Deploy to GitHub Pages** workflow to finish. The published URL will appear in the deployment details and in **Settings → Pages**.
+Before the first deployment, the repository owner must enable Pages:
 
-If the workflow cannot enable Pages automatically (for example, due to repository or organization policy), open **Settings → Pages**, set **Source** to **GitHub Actions**, and rerun the workflow. It can also be started manually from the Actions tab.
+1. Open **Settings → Pages**.
+2. Under **Build and deployment**, set **Source** to **GitHub Actions**.
+3. Push changes to `main`, or rerun **Deploy to GitHub Pages** from the **Actions** tab.
+
+The workflow also attempts to enable Pages automatically, but repository or organization permissions may require the owner to complete the setup above. The published URL appears in the deployment details and in **Settings → Pages**.
