@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Doctor Pill - Medication Reminder</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/lucide@latest"></script>
+  </head>
+  <body>
+    <section id="loginScreen" class="login-screen" aria-labelledby="loginTitle">
+      <div class="login-layout">
+        <div class="login-intro">
+          <div class="login-brand">
+            <span>DOCTOR PILL</span>
+          </div>
+          <img class="login-mascot" src="mascot.png" alt="Dr. Pill mascot" />
+          <h1 id="loginTitle">Dr. Pill is here to keep you on schedule!</h1>
+          <p>
+            Keep your medication list and daily reminders together in one simple
+            place.
+          </p>
+        </div>
+
+        <div class="login-card">
+          <h2>Sign in</h2>
+          <p class="login-description">
+            Enter your details to continue to your dashboard.
+          </p>
+          <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+              <label for="loginEmail">Email address</label>
+              <input
+                type="email"
+                id="loginEmail"
+                name="email"
+                autocomplete="email"
+                placeholder="you@example.com"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="loginPassword">Password</label>
+              <input
+                type="password"
+                id="loginPassword"
+                name="password"
+                autocomplete="current-password"
+                placeholder="Enter your password"
+                required
+              />
+            </div>
+            <p class="login-demo-note">
+              Demo sign-in only: any valid email and non-empty password will
+              open the dashboard. No account is verified and your password is
+              not saved.
+            </p>
+            <button
+              type="submit"
+              class="btn btn-primary btn-block login-submit"
+            >
+              Sign in <i data-lucide="arrow-right"></i>
+            </button>
+            <p
+              id="loginStatus"
+              class="login-status"
+              role="status"
+              aria-live="polite"
+            ></p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <div id="appShell" class="app-shell hidden">
+      <!-- DESKTOP / TABLET SIDEBAR -->
+      <aside class="sidebar">
+        <div class="brand">
+          <!-- Custom Doctor Pill Vector Icon -->
+          <svg
+            class="brand-mascot"
+            viewBox="0 0 100 100"
+            width="44"
+            height="44"
+          >
+            <rect x="25" y="10" width="50" height="30" rx="15" fill="#16A34A" />
+            <path
+              d="M25 25 H75 V30 A10 10 0 0 1 65 40 H35 A10 10 0 0 1 25 30 Z"
+              fill="#16A34A"
+            />
+            <rect x="42" y="14" width="16" height="5" fill="#FFFFFF" rx="2" />
+            <rect
+              x="47.5"
+              y="8.5"
+              width="5"
+              height="16"
+              fill="#FFFFFF"
+              rx="2"
+            />
+            <circle
+              cx="50"
+              cy="50"
+              r="22"
+              fill="#FFFFFF"
+              stroke="#16A34A"
+              stroke-width="3"
+            />
+            <circle cx="42" cy="48" r="4" fill="#0F172A" />
+            <circle cx="58" cy="48" r="4" fill="#0F172A" />
+            <circle
+              cx="38"
+              cy="48"
+              r="7"
+              fill="none"
+              stroke="#0F172A"
+              stroke-width="2"
+            />
+            <circle
+              cx="62"
+              cy="48"
+              r="7"
+              fill="none"
+              stroke="#0F172A"
+              stroke-width="2"
+            />
+            <line
+              x1="45"
+              y1="48"
+              x2="55"
+              y2="48"
+              stroke="#0F172A"
+              stroke-width="2"
+            />
+            <path
+              d="M 42 60 Q 50 67 58 60"
+              fill="none"
+              stroke="#0F172A"
+              stroke-width="2.5"
+              stroke-linecap="round"
+            />
+          </svg>
+          <div>
+            <h2>Doctor Pill</h2>
+            <p>Your health, on time.</p>
+          </div>
+        </div>
+
+        <nav class="nav-links">
+          <button
+            class="nav-btn active"
+            data-tab="dashboard"
+            onclick="switchTab('dashboard')"
+          >
+            <i data-lucide="layout-dashboard"></i>
+            <span>Dashboard</span>
+          </button>
+          <button
+            class="nav-btn"
+            data-tab="medications"
+            onclick="switchTab('medications')"
+          >
+            <i data-lucide="pill"></i>
+            <span>My Medications</span>
+          </button>
+          <button
+            class="nav-btn"
+            data-tab="scanner"
+            onclick="switchTab('scanner')"
+          >
+            <i data-lucide="scan-line"></i>
+            <span>Demo Box Scanner</span>
+          </button>
+          <button
+            class="nav-btn"
+            data-tab="security"
+            onclick="switchTab('security')"
+          >
+            <i data-lucide="shield-check"></i>
+            <span>Data Security</span>
+          </button>
+        </nav>
+
+        <div class="user-profile">
+          <div class="avatar">G</div>
+          <div>
+            <h4 id="profileName">Guest</h4>
+            <p id="profileEmail"></p>
+          </div>
+          <button
+            class="sign-out-btn"
+            type="button"
+            onclick="signOut()"
+            aria-label="Sign out"
+          >
+            <i data-lucide="log-out"></i>
+          </button>
+        </div>
+      </aside>
+
+      <!-- MAIN CONTENT CONTAINER -->
+      <main class="main-content">
+        <!-- TAB 1: DASHBOARD -->
+        <section id="tab-dashboard" class="tab-content active">
+          <header class="top-header">
+            <div>
+              <h1 id="dashboardGreeting">Welcome to your dashboard</h1>
+              <p>Here is your daily health and medication overview.</p>
+            </div>
+            <button class="btn btn-primary" onclick="switchTab('medications')">
+              <i data-lucide="plus-circle"></i> Add Medication
+            </button>
+          </header>
+
+          <div class="reminder-settings card">
+            <div>
+              <h3>Daily dose reminders</h3>
+              <p id="reminderStatus" role="status" aria-live="polite">
+                Reminders run while this app is open. Enable browser
+                notifications for alerts outside the tab.
+              </p>
+            </div>
+            <div class="reminder-actions">
+              <button
+                id="enableRemindersBtn"
+                class="btn btn-primary"
+                type="button"
+                onclick="enableReminders()"
+              >
+                Enable browser notifications
+              </button>
+              <button
+                id="testSoundBtn"
+                class="btn btn-secondary"
+                type="button"
+                onclick="testReminderSound()"
+              >
+                <i data-lucide="volume-2"></i> Test voice reminder
+              </button>
+              <button
+                id="soundToggleBtn"
+                class="btn btn-secondary"
+                type="button"
+                aria-pressed="true"
+                onclick="toggleReminderSound()"
+              >
+                Voice reminder: On
+              </button>
+              <p
+                id="soundStatus"
+                class="sound-status"
+                role="status"
+                aria-live="polite"
+              ></p>
+            </div>
+          </div>
+
+          <!-- Hero Banner with Doctor Pill Mascot -->
+          <div class="hero-card">
+            <div class="hero-text">
+              <span class="badge">SDG 3 Aligned</span>
+              <h2>Dr. Pill is here to keep you on schedule!</h2>
+              <p>
+                Add reminder times exactly as written on each prescription. No
+                dose times are assumed.
+              </p>
+            </div>
+            <div class="mascot-container">
+              <img src="mascot.png" alt="Dr. Pill Mascot" />
+            </div>
+          </div>
+
+          <!-- Next Dose Alert Box -->
+          <div class="alert-card">
+            <div class="alert-icon">
+              <i data-lucide="clock"></i>
+            </div>
+            <div class="alert-details">
+              <span class="alert-tag" id="nextDoseTag">REMINDER STATUS</span>
+              <h3 id="nextDoseTitle">No dose reminders set</h3>
+              <p id="nextDoseSub">
+                Set a reminder time from your prescription.
+              </p>
+              <ul id="nextDoseDetails" class="next-dose-details"></ul>
+            </div>
+            <button class="btn btn-primary" id="takeDoseBtn" type="button">
+              Set Reminder Times
+            </button>
+          </div>
+
+          <section class="upcoming-card card" aria-labelledby="upcomingDosesTitle">
+            <div class="upcoming-header">
+              <div>
+                <h2 id="upcomingDosesTitle">Upcoming prescription times</h2>
+                <p>Scheduled reminders for the next 24 hours.</p>
+              </div>
+            </div>
+            <div id="upcomingDoseList" class="upcoming-dose-list" aria-live="polite">
+              <p class="upcoming-empty">No upcoming reminders. Add a time from your prescription.</p>
+            </div>
+          </section>
+
+          <!-- Quick Metrics Grid -->
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <div class="metric-icon green">
+                <i data-lucide="check-circle-2"></i>
+              </div>
+              <div>
+                <h3>85%</h3>
+                <p>Weekly Adherence</p>
+              </div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-icon blue"><i data-lucide="flame"></i></div>
+              <div>
+                <h3>6 Days</h3>
+                <p>Current Streak</p>
+              </div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-icon purple">
+                <i data-lucide="shield-check"></i>
+              </div>
+              <div>
+                <h3>Protected</h3>
+                <p>Health Data</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 2: MY MEDICATIONS -->
+        <section id="tab-medications" class="tab-content">
+          <header class="top-header">
+            <div>
+              <h1>My Medications</h1>
+              <p>
+                Demo examples only. Confirm every medication and instruction
+                against the actual prescription. There is no prescription count limit.
+              </p>
+            </div>
+          </header>
+
+          <div class="meds-layout">
+            <!-- Add New Form -->
+            <div class="card">
+              <h3><i data-lucide="plus"></i> Add Prescription</h3>
+              <form id="addMedForm" onsubmit="addMedication(event)">
+                <div class="form-group">
+                  <label for="medName">Medication Name</label>
+                  <input
+                    type="text"
+                    id="medName"
+                    placeholder="e.g., Paracetamol"
+                    list="medicationSuggestions"
+                    autocomplete="off"
+                    required
+                  />
+                  <datalist id="medicationSuggestions"></datalist>
+                  <small>
+                    Start typing for medication name suggestions. Always
+                    confirm dosage and directions against the prescription.
+                  </small>
+                </div>
+                <div class="form-group">
+                  <label for="medDosage">Dosage</label>
+                  <input
+                    type="text"
+                    id="medDosage"
+                    placeholder="e.g., 2 tablets (500mg)"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="medRoute">Route / form</label>
+                  <input
+                    type="text"
+                    id="medRoute"
+                    placeholder="e.g., Oral tablet, topical cream"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="medCondition">Condition / specific use</label>
+                  <input
+                    type="text"
+                    id="medCondition"
+                    placeholder="As stated on the prescription"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="medInstructions"
+                    >Instructions on the prescription</label
+                  >
+                  <textarea
+                    id="medInstructions"
+                    rows="3"
+                    placeholder="Enter the instructions on the prescription"
+                    required
+                  ></textarea>
+                </div>
+                <div class="form-group">
+                  <label for="medTime">Daily reminder time (optional)</label>
+                  <input type="time" id="medTime" />
+                  <small>Only set a time that matches the prescription.</small>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">
+                  Save to Local DB
+                </button>
+              </form>
+            </div>
+
+            <!-- Active List -->
+            <div class="card">
+              <div class="list-header">
+                <h3><i data-lucide="list"></i> Prescriptions List</h3>
+                <span class="db-pill-count" id="pillCounter"
+                  >10 Prescriptions</span
+                >
+              </div>
+              <div id="medList" class="med-list">
+                <!-- Loaded dynamically via app.js -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 3: DEMO CAMERA SCANNER -->
+        <section id="tab-scanner" class="tab-content">
+          <header class="top-header">
+            <div>
+              <h1>Demo Box Scanner</h1>
+              <p>
+                Demonstration scan with a preset result; it does not identify
+                medicines from the camera feed.
+              </p>
+            </div>
+          </header>
+
+          <div class="scanner-card">
+            <div class="scanner-viewport">
+              <video
+                id="webcam"
+                autoplay
+                playsinline
+                class="camera-feed hidden"
+              ></video>
+              <div id="scannerPlaceholder" class="scanner-placeholder">
+                <i data-lucide="camera" class="scan-icon"></i>
+                <p>Camera is currently turned off</p>
+              </div>
+              <div id="scanLaser" class="scan-laser hidden"></div>
+            </div>
+
+            <div class="scanner-controls">
+              <button
+                id="startCamBtn"
+                class="btn btn-primary btn-block"
+                onclick="startCamera()"
+              >
+                <i data-lucide="video"></i> Open Live Camera
+              </button>
+              <button
+                id="captureScanBtn"
+                class="btn btn-primary btn-block hidden"
+                onclick="captureAndScan()"
+              >
+                <i data-lucide="scan"></i> Scan Medicine Box
+              </button>
+            </div>
+
+            <!-- Scan Detection Output Modal/Card -->
+            <div id="scanResult" class="scan-result hidden">
+              <div class="result-badge">
+                <i data-lucide="check-circle"></i> Levocetirizine Box Detected
+              </div>
+              <h3>Levocetirizine Dihydrochloride (5mg)</h3>
+              <p>Schedule Detected: Once daily at 09:00 AM</p>
+              <button
+                class="btn btn-primary"
+                onclick="addScannedMed()"
+                style="margin-top: 1rem"
+              >
+                <i data-lucide="plus"></i> Add to My Medications
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 4: DATA SECURITY -->
+        <section id="tab-security" class="tab-content">
+          <header class="top-header">
+            <div>
+              <h1>Health Data Protection</h1>
+              <p>
+                Your medical privacy and safety remain our highest priority.
+              </p>
+            </div>
+          </header>
+
+          <div class="security-grid">
+            <div class="security-card">
+              <i data-lucide="lock" class="sec-icon"></i>
+              <h3>Privacy policy</h3>
+              <p>
+                This application safeguards users’ personal and medication data
+                through appropriate security measures. Information is collected
+                solely to facilitate medication reminders and application
+                functionality. Personal data is neither sold nor disclosed
+                without a lawful basis. Users may request access, rectification
+                or erasure, subject to applicable legislation. Access is
+                restricted to authorised personnel.
+              </p>
+              <p class="policy-updated">Updated on 29/10/2026</p>
+            </div>
+            <div class="security-card">
+              <i data-lucide="shield" class="sec-icon"></i>
+              <h3>Data protection for Medication</h3>
+              <p>
+                Medication data protection requires the secure collection,
+                storage and processing of sensitive health information.
+                Appropriate safeguards, including encryption, access controls
+                and data minimisation, help prevent unauthorised disclosure.
+                Use information for clearly defined purposes, with transparent
+                privacy practices and respect for individuals’ rights to access,
+                correct, or delete data.
+              </p>
+              <p class="policy-updated">Updated on 29/10/2026</p>
+            </div>
+            <div class="security-card">
+              <i data-lucide="key-round" class="sec-icon"></i>
+              <h3>Demonstration Only</h3>
+              <p>
+                Dr Pill is designed to support medication reminders and
+                organisation, not provide medical advice. The application does
+                not diagnose conditions, recommend treatments or replace
+                professional healthcare consultations. Users should consult
+                qualified healthcare professionals regarding medication
+                suitability, dosage, side effects or changes to treatment and
+                seek urgent assistance during medical emergencies.
+              </p>
+              <p class="policy-updated">Updated on 29/10/2026</p>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- MOBILE NAVIGATION (Phones) -->
+      <nav class="mobile-nav">
+        <button
+          class="m-btn active"
+          data-tab="dashboard"
+          onclick="switchTab('dashboard')"
+        >
+          <i data-lucide="layout-dashboard"></i>
+          <span>Home</span>
+        </button>
+        <button
+          class="m-btn"
+          data-tab="medications"
+          onclick="switchTab('medications')"
+        >
+          <i data-lucide="pill"></i>
+          <span>Meds</span>
+        </button>
+        <button class="m-btn" data-tab="scanner" onclick="switchTab('scanner')">
+          <i data-lucide="scan-line"></i>
+          <span>Scan</span>
+        </button>
+        <button
+          class="m-btn"
+          data-tab="security"
+          onclick="switchTab('security')"
+        >
+          <i data-lucide="shield-check"></i>
+          <span>Safety</span>
+        </button>
+        <button class="m-btn" type="button" onclick="signOut()">
+          <i data-lucide="log-out"></i>
+          <span>Sign out</span>
+        </button>
+      </nav>
+
+      <div
+        id="reminderToast"
+        class="reminder-toast hidden"
+        role="alert"
+        aria-live="assertive"
+      >
+        <span id="reminderToastMessage"></span>
+        <button
+          type="button"
+          aria-label="Stop voice and dismiss reminder"
+          onclick="dismissReminder()"
+        >
+          Stop voice &amp; dismiss
+        </button>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
