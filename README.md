@@ -44,4 +44,4 @@ Before the first deployment, the repository owner must enable Pages:
 2. Under **Build and deployment**, set **Source** to **GitHub Actions**.
 3. Push changes to `main`, or rerun **Deploy to GitHub Pages** from the **Actions** tab.
 
-The workflow also attempts to enable Pages automatically, but repository or organization permissions may require the owner to complete the setup above. The published URL appears in the deployment details and in **Settings → Pages**.
+The workflow requires the Pages source to be configured before its first run. The published URL appears in the deployment details and in **Settings → Pages**.
