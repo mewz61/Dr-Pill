@@ -25,6 +25,8 @@ function isValidMedication(medication) {
 
 const previousDemoNames = [
     'Vitamin D3', 'Amoxicillin', 'Ibuprofen', 'Lisinopril', 'Paracetamol',
+
+    
     'Metformin', 'Atorvastatin', 'Omeprazole', 'Levothyroxine', 'Levocetirizine'
 ];
 
@@ -812,3 +814,15 @@ document.addEventListener('DOMContentLoaded', () => {
         updateDashboardReminder();
     }, 15000);
 });
+
+
+"Clean code update"
+
+
+
+Ensure there is no Co-authored-by: github-copilot in the extended description box
+
+
+
+
+
